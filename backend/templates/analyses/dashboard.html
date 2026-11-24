@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}관리자 대시보드 | 동작 분석 플랫폼{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/app.css' %}">
+
+<div class="analysis-page">
+    <h1>관리자 대시보드</h1>
+
+    <section>
+        <h2>동작별 예측 건수</h2>
+        <div style="position: relative; height: 270px;">
+            <canvas id="action-chart" aria-label="동작별 예측 건수"></canvas>
+        </div>
+        <ul>
+            {% for row in actions %}
+                <li>{{ row.label }} · {{ row.count }}건</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section>
+        <h2>상태별 작업 건수</h2>
+        <div style="position: relative; height: 240px;">
+            <canvas id="status-chart" aria-label="상태별 작업 건수"></canvas>
+        </div>
+        <ul>
+            {% for row in statuses %}
+                <li>{{ row.label }} · {{ row.count }}건</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section>
+        <h2>최근 작업 10건</h2>
+        <table>
+            <thead>
+                <tr><th>작업</th><th>요청 사용자</th><th>입력 방식</th><th>상태</th></tr>
+            </thead>
+            <tbody>
+                {% for job in recent_jobs %}
+                <tr>
+                    <td><a href="{% url 'admin:analyses_analysisjob_change' job.pk %}">#{{ job.pk }}</a></td>
+                    <td>{{ job.user.username }}</td>
+                    <td>{{ job.get_input_type_display }}</td>
+                    <td>{{ job.get_status_display }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">아직 분석 작업이 없습니다.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</div>
+
+{{ actions|json_script:"action-data" }}
+{{ statuses|json_script:"status-data" }}
+<script defer src="{% static 'js/chart.umd.min.js' %}"></script>
+<script defer src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

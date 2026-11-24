@@ -1,0 +1,31 @@
+body {
+    margin: 0;
+    background: #17212a;
+    color: #edf2f5;
+    font: 16px/1.5 system-ui, sans-serif;
+}
+header, .analysis-page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 16px;
+}
+nav { display: flex; align-items: center; gap: 16px; }
+a { color: #9edbd3; }
+section {
+    margin: 16px 0;
+    padding: 18px;
+    background: #22313e;
+    border-radius: 8px;
+}
+h1, h2 { margin: 0 0 12px; }
+h2 { font-size: 1.15rem; }
+label { display: block; margin: 10px 0 4px; }
+input, select, button { font: inherit; }
+button, select { padding: 5px 10px; }
+button { cursor: pointer; }
+#submit-job { margin-top: 14px; }
+#form-message:empty, #job-detail:empty { display: none; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 8px; text-align: left; border-bottom: 1px solid #536575; }
+#history { padding: 0; list-style: none; }
+#history li { margin: 6px 0; }

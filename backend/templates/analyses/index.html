@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}동작 분석 | 동작 분석 플랫폼{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/app.css' %}">
+
+<div class="analysis-page">
+    <h1>동작 분석</h1>
+    <p>{{ user.username }}님으로 로그인했습니다.</p>
+
+    <section>
+        <h2>새 분석</h2>
+        <form id="analysis-form" action="{% url 'analysis-job-list' %}" method="post"
+              enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <label for="input-type">입력 방식</label>
+            <select id="input-type" name="input_type">
+                <option value="upload">MP4 영상 업로드</option>
+                {% if camera_ids %}
+                    <option value="camera">IP Webcam · 8초 촬영</option>
+                {% endif %}
+            </select>
+
+            <div id="upload-fields">
+                <label for="video">분석할 MP4 파일</label>
+                <input id="video" type="file" name="video" accept=".mp4,video/mp4" required>
+            </div>
+
+            <div id="camera-fields" hidden>
+                <label for="camera">등록된 카메라</label>
+                <select id="camera" name="camera_id" disabled>
+                    {% for camera in camera_ids %}
+                        <option value="{{ camera }}">{{ camera }}</option>
+                    {% endfor %}
+                </select>
+                <p>휴대폰 카메라 서버를 켜고, 분석 시작을 누른 뒤 한 가지 동작을 수행해 주세요.</p>
+            </div>
+
+            <button id="submit-job" type="submit">분석 시작</button>
+            <p id="form-message" role="status"></p>
+        </form>
+    </section>
+
+    <section>
+        <h2>분석 결과</h2>
+        <p id="job-status" role="status">새 분석을 시작하거나 아래에서 기록을 선택하세요.</p>
+        <p id="job-detail"></p>
+        <table id="result-table" hidden>
+            <thead>
+                <tr><th>추적 ID</th><th>예측 동작</th><th>신뢰도</th></tr>
+            </thead>
+            <tbody id="result-body"></tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>최근 분석 기록</h2>
+        <ul id="history">
+            {% for job in recent_jobs %}
+                <li>
+                    <button type="button" data-job-id="{{ job.id }}">
+                        #{{ job.id }} · {{ job.get_input_type_display }} · {{ job.get_status_display }}
+                    </button>
+                </li>
+            {% empty %}
+                <li id="empty-history">아직 등록한 분석이 없습니다.</li>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+
+<script src="{% static 'js/analyses.js' %}" defer></script>
+{% endblock %}
